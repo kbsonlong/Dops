@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="icon" href="https://dabeng.github.io/OrgChart/img/logo.png">
+    <link rel="stylesheet" href="https://dabeng.github.io/OrgChart/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.6/css/jquery.orgchart.css">
+    <link rel="stylesheet" href="https://dabeng.github.io/OrgChart/css/style.css">
+
+    <style type="text/css">
+    .orgchart { background: #fff; }
+    .orgchart td.left, .orgchart td.right, .orgchart td.top { border-color: #aaa; }
+    .orgchart td>.down { background-color: #aaa; }
+    .orgchart .middle-level .title { background-color: #006699; }
+    .orgchart .middle-level .content { border-color: #006699; }
+    .orgchart .product-dept .title { background-color: #009933; }
+    .orgchart .product-dept .content { border-color: #009933; }
+    .orgchart .rd-dept .title { background-color: #993366; }
+    .orgchart .rd-dept .content { border-color: #993366; }
+    .orgchart .pipeline1 .title { background-color: #996633; }
+    .orgchart .pipeline1 .content { border-color: #996633; }
+    .orgchart .frontend1 .title { background-color: #cc0066; }
+    .orgchart .frontend1 .content { border-color: #cc0066; }
+  </style>
+</head>
+<body>
+<div id="chart-container"></div>
+
+
+
+<script type="text/javascript" src="https://cdn.bootcss.com/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/orgchart/2.1.6/js/jquery.orgchart.js"></script>
+<script type="text/javascript">
+    (function($) {
+        $(function() {
+            var ds = {
+                    "name" : "业务名称",
+                    "title": "{{ product.name }}", 'className': 'middle-level',
+                    "children" : [
+                        {% for project in product.project_set.all %}
+                            {
+                                "name" : "项目名称",
+                                "title": "{{ project.name }}", 'className': 'product-dept',
+                                "children": [
+                                    {% for app in project.app_set.all %}
+                                        {
+                                            "name" : "应用名称",
+                                            "title" : "{{ app.name }}", 'className': 'rd-dept',
+                                            "children": [
+                                                {% for server in app.server.all %}
+                                                    {
+                                                        "name":"部署主机",
+                                                        "title":" {{ server.hostname }}",
+                                                        "className": "pipeline1"
+                                                    },
+                                                {% endfor %}
+                                                {% for service in app.service.all %}
+                                                    {
+                                                        "name":"依赖基础服务",
+                                                        "title":"{{ service.name }}",
+                                                        'className': 'frontend1',
+                                                        "children": [
+                                                            {% for server in  service.Server.all  %}
+                                                                {
+                                                                    "name":"部署主机",
+                                                                    "title": "{{ server.hostname }}",
+                                                                    "className": "pipeline1"
+                                                                },
+                                                             {% endfor %}
+                                                        ]
+                                                    },
+                                                {% endfor %}
+                                            ]
+                                        },
+                                    {% endfor %}
+                                ]
+                            },
+                        {% endfor %}
+                    ]
+            };
+            var oc = $('#chart-container').orgchart({
+                'data' : ds,
+                'nodeContent': 'title',
+                'visibleLevel':4//展开几级
+            });
+
+        });
+    })(jQuery);
+</script>
+</body>
+</html>
