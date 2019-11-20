@@ -1,0 +1,165 @@
+{% load staticfiles %}
+<aside class="main-sidebar">
+
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+
+        <!-- Sidebar user panel -->
+        <div class="user-panel">
+            <div class="pull-left image">
+                <img src="{% static 'adminlet-2.4.10/dist/img/user2-160x160.jpg' %}" class="img-circle" alt="User Image">
+            </div>
+            <div class="pull-left info">
+                <p>{{ user.username }}</p>
+                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+            </div>
+        </div>
+
+         <!-- search form (Optional)-->
+        <form action="#" method="get" class="sidebar-form">
+            <div class="input-group">
+                <input type="text" name="q" class="form-control" placeholder="全文检索...">
+                <span class="input-group-btn">
+                    <button type="submit" name="search" id="search-btn" class="btn btn-flat"><i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </form>
+        <!-- /.search form -->
+
+        <!-- Sidebar Menu -->
+        <ul class="sidebar-menu" data-widget="tree">
+            <li class="header">主菜单</li>
+            {% if user.is_superuser %}
+                <li><a href="#"><i class="fa fa-tachometer"></i><span>仪表盘</span></a></li>
+            {% endif %}
+
+            {% if perms.accounts.add_userprofile or perms.auth.add_group %}
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-fw fa-users"></i>
+                        <span>用户管理{{ perms.accounts.delete_userprofile }}</span>
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        {% if perms.accounts.add_userprofile %}
+                            <li><a href="#"><i class="fa  fa-user"></i> 用户列表</a></li>
+                        {% endif %}
+                        {% if perms.auth.add_group %}
+                            <li><a href="#"><i class="fa fa-users"></i> 用户组</a></li>
+                        {% endif %}
+                        {% if perms.accounts.add_userprofile %}
+                            <li><a href=""><i class="fa fa-user-secret"></i> 操作记录</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if perms.assets.view_asset or perms.assets.view_app or  perms.assets.view_resource   %}
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-institution"></i> <span>资产管理</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        {% if user.is_superuser %}
+                            <li><a href="#"><i class="fa  fa-pie-chart"></i>资产概览</a></li>
+                            <li><a href="{% url "cmdb:asset_list" %}"><i class="fa fa-list"></i>资产列表</a></li>
+                        {% endif %}
+
+                        {% if perms.assets.view_app %}
+                            <li><a href="#"><i class="fa fa-list"></i>应用列表</a></li>
+                        {% endif %}
+
+                        {% if perms.assets.view_resource %}
+                            <li><a href="#"><i class="fa fa-list"></i>资源申请列表</a></li>
+                        {% endif %}
+
+                        {% if user.is_superuser %}
+                            <li><a href="#"><i class="fa fa-user-secret"></i>
+                                主机登录日志</a>
+                            </li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+
+            {% if perms.fort.ssh_fortserver %}
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-fw fa-terminal"></i> <span>连接管理</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        {% if request.user.is_superuser %}
+                            <li><a href="#"><i class="fa fa-street-view"></i> 主机用户配置</a></li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+
+        {% if perms.deploy %}
+
+
+            <li class="treeview">
+                <a href="#">
+                    <i class="fa fa-fw fa-github-alt"></i>
+                    <span>配置管理</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+                    {% if  perms.deploy.add_appconf  %}
+                        <li><a href="#"><i class="fa fa-mortar-board"></i> 新增配置</a></li>
+                    {% endif %}
+                    {% if perms.deploy.view_appconf %}
+                        <li><a href="#"><i class="fa fa-file-text-o"></i> 配置管理</a></li>
+                    {% endif %}
+                </ul>
+            </li>
+        {% endif %}
+
+
+            {% if perms.plan.add_dblog %}
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-fw fa-database"></i> <span>Other</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        {% if user.is_superuser %}
+                            <li><a href="#"><i class="fa fa-wrench"></i> Git管理</a></li>
+                        {% endif %}
+                        <li><a href="#"><i class="fa fa-signal"></i> 操作记录</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+
+
+            {% if perms.plan.add_periodictask %}
+                <li class="treeview">
+                    <a href="#"><i class="fa fa-fw fa-sliders"></i> <span>任务编排</span>
+                        <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-clock-o"></i> 调度管理</a></li>
+                        <li><a href="#"><i class="fa fa-star"></i> 任务管理</a></li>
+                        <li><a href="#"><i class="fa fa-retweet"></i> 运行日志</a></li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+        <!-- /.sidebar-menu -->
+        <ul class="sidebar-menu" data-widget="tree">
+            {% load rbac %}
+            {% get_menu request %}
+        </ul>
+    </section>
+    <!-- /.sidebar -->
+</aside>
