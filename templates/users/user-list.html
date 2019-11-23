@@ -9,12 +9,12 @@
 
     <style>
         /* dataTables列内容居中 */
-        #Asset > tbody > tr > td {
+        #User > tbody > tr > td {
             text-align: center;
         }
 
         /* dataTables表头居中 */
-        #Asset > thead:first-child > tr:first-child > th {
+        #User > thead:first-child > tr:first-child > th {
             text-align: center;
         }
 
@@ -29,11 +29,11 @@
     <br>
     <div class="row">
         <div class="col-xs-12" style="margin-bottom: 3px">
-            <button class="btn btn-sm btn-success pull-left" data-toggle="modal" data-target="#AssetModal" id="add-Asset"  style="margin-left: 15px">
-                <i class="fa fa-Asset-plus"></i>
-                <span class="bigger-110">新增资产</span>
+            <button class="btn btn-sm btn-success pull-left" data-toggle="modal" data-target="#UserModal" id="add-User"  style="margin-left: 15px">
+                <i class="fa fa-User-plus"></i>
+                <span class="bigger-110">新增用户</span>
             </button>
-            <button class="btn btn-sm btn-info pull-left" data-toggle="modal" data-target="#importAssetsModal"
+            <button class="btn btn-sm btn-info pull-left" data-toggle="modal" data-target="#importUsersModal"
                     style="margin-left: 2px">
                 <i class="fa fa-upload"></i>
                 <span class="bigger-110">批量导入</span>
@@ -48,8 +48,8 @@
             </button>
         </div>
 
-        <!-- AssetModal  -->
-        <div class="modal fade" id="AssetModal" tabindex="-1" role="dialog" aria-labelledby="AssetModalLabel"
+        <!-- UserModal  -->
+        <div class="modal fade" id="UserModal" tabindex="-1" role="dialog" aria-labelledby="UserModalLabel"
              aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -57,23 +57,23 @@
                         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">
                             &times;
                         </button>
-                        <h4 class="modal-title" id="AssetModalLabel">
+                        <h4 class="modal-title" id="UserModalLabel">
 
                         </h4>
                     </div>
 
-                    {% if perms.accounts.change_Assetprofile and perms.accounts.add_Assetprofile %}
+                    {% if 'user_add' in session.permissions_list %}
                         <div class="modal-body">
-                            <form class="main form-horizontal" id="asset_form">
+                            <form class="main form-horizontal" id="User_form">
                                 <fieldset>
                                     <div class="form-group">
                                         <label for="groups" class="col-sm-2 control-label">资产类型</label>
                                         <div class="col-sm-6">
-                                            <select class="form-control select2 select2-allow-clear"  name="asset_type"
-                                                    id="asset_type" style="width: 100%;" onchange="assetType()">
+                                            <select class="form-control select2 select2-allow-clear"  name="User_type"
+                                                    id="User_type" style="width: 100%;" onchange="UserType()">
                                                 <option>请选择资产类型</option>
-                                                {% for asset_type in asset_types %}
-                                                    <option value="{{ asset_type.0 }}">{{ asset_type.1 }}</option>
+                                                {% for User_type in User_types %}
+                                                    <option value="{{ User_type.0 }}">{{ User_type.1 }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
@@ -91,21 +91,21 @@
                                     <div class="form-group">
                                         <label for="name" class="col-sm-2 control-label">资产名称<span class="text-red">*</span></label>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" name="asset_name" id="asset_name">
+                                            <input type="text" class="form-control" name="User_name" id="User_name">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
                                         <label for="sn" class="col-sm-2 control-label">资产编号<span class="text-red">*</span></label>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" name="asset_sn" id="asset_sn">
+                                            <input type="text" class="form-control" name="User_sn" id="User_sn">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="asset_status" class="col-sm-2 control-label">设备状态</label>
+                                        <label for="User_status" class="col-sm-2 control-label">设备状态</label>
                                         <div class="col-sm-6">
-                                            <select class="form-control" name="asset_status" id="asset_status">
+                                            <select class="form-control" name="User_status" id="User_status">
                                                 <option value="5">新购</option>
                                                 <option value="0">在线</option>
                                                 <option value="1">下线</option>
@@ -119,32 +119,32 @@
                                     <div class="form-group">
                                         <label for="price" class="col-sm-2 control-label">价格</label>
                                         <div class="col-sm-6">
-                                            <input type="text" class="form-control" name="asset_price" id="asset_price">
+                                            <input type="text" class="form-control" name="User_price" id="User_price">
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="asset_product" class="col-sm-2 control-label">所属业务线</label>
+                                        <label for="User_product" class="col-sm-2 control-label">所属业务线</label>
                                         <div class="col-sm-6">
-                                            <select class="form-control" name="asset_product" id="asset_product">
+                                            <select class="form-control" name="User_product" id="User_product">
 
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="asset_admin" class="col-sm-2 control-label">资产管理员</label>
+                                        <label for="User_admin" class="col-sm-2 control-label">资产管理员</label>
                                         <div class="col-sm-6">
-                                            <select class="form-control" name="asset_admin" id="asset_admin">
+                                            <select class="form-control" name="User_admin" id="User_admin">
 
                                             </select>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="asset_provider" class="col-sm-2 control-label">云服务商</label>
+                                        <label for="User_provider" class="col-sm-2 control-label">云服务商</label>
                                         <div class="col-sm-6">
-                                            <select class="form-control" name="asset_provider" id="asset_provider">
+                                            <select class="form-control" name="User_provider" id="User_provider">
                                                 <option value="">请选择云服务商</option>
 
                                             </select>
@@ -152,20 +152,20 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="asset_idc" class="col-sm-2 control-label">所在机房</label>
+                                        <label for="User_idc" class="col-sm-2 control-label">所在机房</label>
                                         <div class="col-sm-6">
-                                            <select class="form-control" name="asset_idc" id="asset_idc">
+                                            <select class="form-control" name="User_idc" id="User_idc">
                                                 <option value="">请选择机房</option>
-                                                {% for asset_idc in asset_idcs %}
-                                                    <option value="{{ asset_idc.id }}">{{ asset_idc.idc_name }}</option>
+                                                {% for User_idc in User_idcs %}
+                                                    <option value="{{ User_idc.id }}">{{ User_idc.idc_name }}</option>
                                                 {% endfor %}
                                             </select>
                                         </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="asset_memo" class="col-sm-2 control-label">备注</label>
+                                        <label for="User_memo" class="col-sm-2 control-label">备注</label>
                                         <div class="col-sm-6">
-                                            <textarea class="form-control" name="asset_memo" id="asset_memo"></textarea>
+                                            <textarea class="form-control" name="User_memo" id="User_memo"></textarea>
                                         </div>
                                     </div>
 
@@ -203,9 +203,9 @@
 
                                 <div class="box-footer">
                                     <button type="button" class="btn btn-default pull-right" onclick="history.go(0)">返回</button>
-                                    <button type="button" class="btn btn-info pull-right" onclick="addAsset(another=false)">确认添加，并返回资产列表
+                                    <button type="button" class="btn btn-info pull-right" onclick="addUser(another=false)">确认添加，并返回资产列表
                                     </button>
-                                    <button type="button" class="btn btn-info pull-right" onclick="addAsset(another=true)">确认添加，继续添加另一个资产
+                                    <button type="button" class="btn btn-info pull-right" onclick="addUser(another=true)">确认添加，继续添加另一个资产
                                     </button>
                                 </div>
                                 <!-- /.box-footer -->
@@ -230,70 +230,48 @@
             <!-- /.box -->
             <div class="box">
                 <div class="box-body">
-                    <table id="Asset" class="table table-bordered table-striped">
+                    <table id="User" class="table table-bordered table-striped">
                         <thead>
                         <tr>
                             <th></th>
-                            <th>资产类型</th>
-                            <th>公网地址</th>
-                            <th>内网地址</th>
-                            <th>资产名称</th>
-                            <th>部署应用数</th>
-                            <th>业务线</th>
+                            <th>用户名称{{ session.permissions_list }}</th>
+                            <th>用户角色</th>
+                            <th>用户邮箱</th>
+                            <th>联系方式</th>
+                            <th>超级管理员</th>
                             <th>状态</th>
-                            <th>所属环境</th>
-                            <th>更新日期</th>
+                            <th>最后登录时间</th>
                             <th>操作</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for Asset in assets %}
+                        {% for User in users %}
                             <tr>
-                                <td>{{ Asset.id }}</td>
-                                {% if Asset.asset_type == 'server' %}
-                                  <td class="text-green text-bold">{{ Asset.get_asset_type_display }}</td>
-                                {% elif Asset.type == "networkdevice" %}
-                                  <td class="text-yellow text-bold">{{ Asset.get_type_display }}</td>
-                                {% elif Asset.type == "storagedevice" %}
-                                  <td class="text-blue text-bold">{{ Asset.get_type_display }}</td>
-                                {% elif Asset.type == "securitydevice" %}
-                                  <td class="text-red text-bold">{{ Asset.get_type_display }}</td>
+                                <td>{{ User.id }}</td>
+                                <td class="text-green text-bold">{{ User.username }}</td>
+                                <td><a href="#">{% for role in User.role.all %} {{ role.title }}{% endfor %}</a></td>
+                                <td><a href="#">{{ User.email }}</a></td>
+                                <td>{{ User.phone }}</td>
+                                {% if  User.is_superuser %}
+                                    <td><button class="btn btn-success  btn-xs">是</button></td>
+                                {% else %}
+                                    <td><button class="btn btn-default  btn-xs">否</button></td>
                                 {% endif %}
-
-                                <td><a href="#">{{ Asset.server.public_ip }}</a></td>
-                                <td><a href="#">{{ Asset.server.intranet_ip }}</a></td>
-                                <td>{{ Asset.name }}</td>
-                                <td>{{ Asset.server.app_set.count }}</td>
+                                {% if  User.is_active %}
+                                    <td><button class="btn btn-success  btn-xs">激活</button></td>
+                                {% else %}
+                                    <td><button class="btn btn-default  btn-xs">禁用</button></td>
+                                {% endif %}
                                 <td>
-                                    {{ Asset.asset_project}}
-                                </td>
-                                <td>
-                                    {% if Asset.status == 0 %}
-                                        <span class="label label-success">{{ Asset.get_status_display }}</span>
-                                    {% elif Asset.status == 1 %}
-                                        <span class="label label-warning">{{ Asset.get_status_display }}</span>
-                                    {% elif Asset.status == 2 %}
-                                        <span class="label label-danger">{{ Asset.get_status_display }}</span>
-                                    {% elif Asset.status == 3 %}
-                                        <span class="label label-danger">{{ Asset.get_status_display }}</span>
-                                    {% elif Asset.status == 4 %}
-                                        <span class="label label-primary">{{ Asset.get_status_display }}</span>
-                                    {% elif Asset.status == 5 %}
-                                        <span class="label label-default">{{ Asset.get_status_display }}</span>
-                                    {% endif %}
+                                    {{ User.last_login|date:"Y-m-i H:s"}}
                                 </td>
 
-                                <td>
-                                    {{ Asset.server.env.name }}
-                                </td>
-
-                                <td>{{ Asset.modity_time|date:"Y-m-i" }}</td>
                                 <td>
                                     <a href="#">
                                         <button type="button" class="btn btn-success btn-xs modify" data-toggle="modal"
-                                            data-id="{{ Asset.id }}" data-target="#AssetModal">详细</button>
+                                            data-id="{{ User.id }}" data-target="#UserModal">详细</button>
                                     </a>
-                                    <button type="button" class="btn btn-danger btn-xs delete" data-id="{{ Asset.id }}">
+                                    <button type="button" class="btn btn-danger btn-xs delete" data-id="{{ User.id }}">
                                         删除
                                     </button>
                                 </td>
@@ -330,7 +308,7 @@
 
     <script>
         $(function () {
-            Asset_table = $('#Asset').DataTable({
+            User_table = $('#User').DataTable({
                 columnDefs: [
                     {
                         'targets': -1,
@@ -365,7 +343,7 @@
 
         function checked() {
             let checkedID = [];
-            let rows_selected = Asset_table.column(0).checkboxes.selected();
+            let rows_selected = User_table.column(0).checkboxes.selected();
             $.each(rows_selected, function (index, rowId) {
                 checkedID.push(rowId)
             });
@@ -379,7 +357,7 @@
             $.fn.serializeJson = function () {
                 let serializeObj = {};
                 let array = this.serializeArray();
-                let names = ['Assetname', 'mobile', 'is_superAsset', 'is_active'];
+                let names = ['Username', 'mobile', 'is_superUser', 'is_active'];
                 $(array).each(function () {
                     if (serializeObj[this.name]) {
                         if ($.isArray(serializeObj[this.name])) {
@@ -400,74 +378,73 @@
         })(jQuery);
 
 
-         function assetType() {
+         function UserType() {
             console.log('click');
-            let asset_type = $('#asset_type').val();
-            console.log(asset_type);
+            let User_type = $('#User_type').val();
             let device_obj = $('#device_type');
-            if (asset_type === 'server') {
+            if (User_type === 'server') {
                 device_obj.html('<option>请选择设备类型</option>');
                 {% for server_type in server_types %}
                     device_obj.append('<option value="' + {{ server_type.0 }} +'">' + '{{ server_type.1 }}' + '</option>');
                 {% endfor %}
                 $('#server_items').show();
-            } else if (asset_type === 'network') {
-                console.log(asset_type);
+            } else if (User_type === 'network') {
+                console.log(User_type);
                 $('#server_items').hide();
                 device_obj.html('<option>请选择设备类型</option>');
                 {% for network_type in network_types %}
                     device_obj.append('<option value="' + {{ network_type.0 }} +'">' + '{{ network_type.1 }}' + '</option>');
                 {% endfor %}
 
-            } else if (asset_type === 'office') {
+            } else if (User_type === 'office') {
                 device_obj.html('<option>请选择设备类型</option>');
                 {% for office_type in office_types %}
                     device_obj.append('<option value="' + {{ office_type.0 }} +'">' + '{{ office_type.1 }}' + '</option>');
                 {% endfor %}
                 $('#server_items').hide();
-            } else if (asset_type === 'securit') {
+            } else if (User_type === 'securit') {
                 device_obj.html('<option>请选择设备类型</option>');
                 {% for security_type in security_types %}
                     device_obj.append('<option value="' + {{ security_type.0 }} +'">' + '{{ security_type.1 }}' + '</option>');
                 {% endfor %}
                 $('#server_items').hide();
-            } else if (asset_type === 'storage') {
+            } else if (User_type === 'storage') {
                 device_obj.html('<option>请选择设备类型</option>');
                 {% for storage_type in storage_types %}
                     device_obj.append('<option value="' + {{ storage_type.0 }} +'">' + '{{ storage_type.1 }}' + '</option>');
                 {% endfor %}
                 $('#server_items').hide();
-            } else if (asset_type === 'software') {
+            } else if (User_type === 'software') {
                 device_obj.html('<option>请选择设备类型</option>').hide();
                 {% for software_type in software_types %}
                     device_obj.append('<option value="' + {{ software_type.0 }} +'">' + '{{ software_type.1 }}' + '</option>');
                 {% endfor %}
                 $('#server_items').hide();
             } else {
-                console.log(asset_type);
+                console.log(User_type);
                 $('#server_items').hide();
             }
         }
 
         function deviceType() {
-            let asset_type = $('#asset_type').val();
+            let User_type = $('#User_type').val();
             let device_type = $('#device_type').val();
             let hosted_obj = $('.hosted_on');
-            asset_type === 'server'  ? hosted_obj.show() : hosted_obj.hide()
+            User_type === 'server'  ? hosted_obj.show() : hosted_obj.hide()
         }
 
         // 添加资产
         (function ($) {
-            $.fn.formatData = function (assetType) {
+            $.fn.formatData = function (UserType) {
                 let formatObj = {};
-                let assetObj = {};
+                let UserObj = {};
                 let array = this.serializeArray();
                 $(array).each(function () {
-                    if (this.name.indexOf('asset_') !== -1) {
-                        assetObj[this.name.split('_')[1]] = this.value;
-                        formatObj['asset'] = assetObj;
+                    if (this.name.indexOf('User_') !== -1) {
+                        UserObj[this.name.split('_')[1]] = this.value;
+                        formatObj['User'] = UserObj;
                     } else if (this.name.indexOf('device_') !== -1) {
-                        formatObj[assetType + '_type'] = this.value;
+                        formatObj[UserType + '_type'] = this.value;
                     } else {
                         formatObj[this.name] = this.value;
                     }
@@ -476,16 +453,16 @@
             };
         })(jQuery);
 
-        function addAsset(another) {
-            let assetType = $('#asset_type').val();
-            let data = $('.form-horizontal').formatData(assetType);
+        function addUser(another) {
+            let UserType = $('#User_type').val();
+            let data = $('.form-horizontal').formatData(UserType);
             console.log(data);
-            if (assetType === "server") {
-                var post_url = '/api/asset/'+assetType+'/';
+            if (UserType === "server") {
+                var post_url = '/api/User/'+UserType+'/';
                 var post_data = data
             }else {
-                var post_url = '/api/assets/';
-                var post_data = data.asset
+                var post_url = '/api/Users/';
+                var post_data = data.User
             }
             $.ajax({
                 url: post_url,
@@ -501,7 +478,7 @@
                             type: 'green',
                             buttons: {
                                 Ok: function () {
-                                    document.getElementById("asset_form").reset();
+                                    document.getElementById("User_form").reset();
                                     $(".select2").val('').trigger('change');
                                 },
                             }
@@ -513,7 +490,7 @@
                             type: 'green',
                             buttons: {
                                 Ok: function () {
-                                    window.location.href = '{% url 'cmdb:asset_list' %}';
+                                    window.location.href = '{% url 'rbac:user_list' %}';
                                 },
                             }
                         })
@@ -529,12 +506,12 @@
             })
         }
 
-        let assets_tbody = $('#Asset tbody');
-        let assets_ops = $('#assets_ops');
+        let Users_tbody = $('#User tbody');
+        let Users_ops = $('#Users_ops');
 
-        // 删除资产
-        assets_tbody.on('click', '.delete', function () {
-            {% if perms.auth.delete_assets %}
+        // 删除
+        Users_tbody.on('click', '.delete', function () {
+            {% if perms.auth.delete_Users %}
                 let pk = $(this).attr('data-id');
                 let tr_obj = $(this).parents('tr');
                 $.confirm({
@@ -544,10 +521,10 @@
                     buttons: {
                         Ok: function () {
                             $.ajax({
-                                url: '/api/assets/' + pk + '/',
+                                url: '/api/users/' + pk + '/',
                                 method: 'DELETE',
                                 success: function () {
-                                    Asset_table.row(tr_obj).remove().draw();
+                                    User_table.row(tr_obj).remove().draw();
                                 },
                                 error: function (data) {
                                     $.alert({
@@ -574,7 +551,7 @@
 
         // 批量导出
         $('#exportChecked').click(function () {
-            {% if perms.assets.add_assets %}
+            {% if perms.Users.add_Users %}
                 let checkedID = checked();
                 console.log(checkedID);
                 if (checkedID.length === 0) {
@@ -585,7 +562,7 @@
                     })
                 } else {
                     let xhr = new XMLHttpRequest();
-                    xhr.open('POST', '{% url "cmdb:assets_dumps" %}');
+                    xhr.open('POST', '#');
                     xhr.responseType = 'blob';
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
                     xhr.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
@@ -596,20 +573,20 @@
                             reader.readAsDataURL(blob);
                             reader.onload = function (e) {
                                 let a = document.createElement('a');
-                                a.download = '资产列表.csv';
+                                a.download = '用户信息.csv';
                                 a.href = e.target.result;
                                 a.click();
                                 $(a).remove();
                             }
                         }
                     };
-                    xhr.send('assetsIds=' + JSON.stringify(checkedID))
+                    xhr.send('UsersIds=' + JSON.stringify(checkedID))
                 }
             {% else %}
                 $.alert({
                     title: 'Tips',
                     type: 'red',
-                    content: '抱歉！您没有导出资产的权限！如有疑问，请联系管理员！',
+                    content: '抱歉！您没有导出权限！如有疑问，请联系管理员！',
                 });
             {% endif %}
         });
@@ -617,7 +594,7 @@
 
         // 批量删除
         $("#deleteChecked").click(function () {
-            {% if perms.assets.delete_assets %}
+            {% if perms.Users.delete_Users %}
                 let checkedID = checked();
                 console.log(checkedID);
                 if (checkedID.length === 0) {
@@ -635,7 +612,7 @@
                             Ok: function () {
                                 for (let i = 0; i < checkedID.length; i++) {
                                     $.ajax({
-                                        url: '/api/assets/' + checkedID[i] + '/',
+                                        url: '/api/users/' + checkedID[i] + '/',
                                         method: 'DELETE',
                                         error: function (data) {
                                             $.alert({
@@ -675,11 +652,11 @@
         //获取列表
         function get_list (info){
             $.ajax({
-                url: '/api/asset/' + info  + '/',
+                url: '/api/user/' + info  + '/',
                 type: 'GET',
                 success: function (res) {
                     console.log(res);
-                    let cabinet_obj = $('#asset_'+info);
+                    let cabinet_obj = $('#User_'+info);
                     let cabinets = res;
                     cabinet_obj.html('');
                     for (let i = 0; i < cabinets.length; i++) {
@@ -692,18 +669,16 @@
         }
 
         $(document).ready(function(){
-            get_list('idc');
-            get_list('product');
             $('#server_items').hide();
             $('#device_type').hide();
         });
 
         $(document).ready(function () {
             $.ajax({
-                url: '/api/account/users/',
+                url: '/api/users/',
                 type: 'GET',
                 success: function (res) {
-                    let cabinet_obj = $('#asset_admin');
+                    let cabinet_obj = $('#User_admin');
                     let cabinets = res;
                     cabinet_obj.html('');
                     for (let i = 0; i < cabinets.length; i++) {
@@ -714,24 +689,6 @@
                 }
             })
         });
-
-
-        $(document).ready(function () {
-            $.ajax({
-                url: '/api/asset/env/',
-                type: 'GET',
-                success: function (res) {
-                    let cabinet_obj = $('#env');
-                    let cabinets = res;
-                    cabinet_obj.html('');
-                    for (let i = 0; i < cabinets.length; i++) {
-                        cabinet_obj.append(
-                            '<option value=' + cabinets[i]['id'] + '>' + cabinets[i]['name_cn'] + '</option>'
-                        )
-                    }
-                }
-            })
-        })
     </script>
 
     <script>

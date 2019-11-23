@@ -66,7 +66,7 @@ class Permission(models.Model):
         null=True,
         blank=True,
         help_text=u'如果添加的是子权限，请选择父权限',
-        on_delete=True
+        on_delete=models.CASCADE
     )
 
     # 指定属于哪个menu
@@ -97,7 +97,7 @@ class Menu(models.Model):
         null=True,
         blank=True,
         help_text=u'如果添加的是子菜单，请选择父菜单',
-        on_delete=True
+        on_delete=models.CASCADE
     )
 
     priority = models.IntegerField(

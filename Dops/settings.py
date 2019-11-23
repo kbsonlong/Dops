@@ -41,9 +41,10 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rbac.apps.RbacConfig',
     'cmdb.apps.CmdbConfig',
+    'rest_framework',
     #第三方组件
     'bootstrap3',
-'pure_pagination',
+    'pure_pagination',
 ]
 
 MIDDLEWARE = [
@@ -112,15 +113,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-hans'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Shanghai'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -138,6 +139,19 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media/')
 AUTH_USER_MODEL = "rbac.UserInfo"
 
 # 配置白名单
+# #################### 权限相关配置 #############################
+PERMISSION_DICT_SESSION_KEY = "user_permission_dict_key"
+PERMISSION_MENU_SESSION_KEY = "user_permission_menu_key"
+
+REX_FORMAT = "^%s$"
+
+VALID_LIST = [
+    '/',
+    '^/admin/.*',
+    r'^/login/',
+    r'^/register/',
+    r'^/get_auth_img/',
+]
 WHITE_URL_LIST = [
     r'^/',
     r'^/admin/.*',  # 放行admin应用url

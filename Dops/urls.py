@@ -16,9 +16,11 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from cmdb import views
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('',views.index,name="index"),
+    path('',views.IndexListView.as_view(),name="index"),
     path('cmdb/',include('cmdb.urls',namespace='cmdb')),
+    path('api/',include('api.urls',namespace='api')),
     path('rbac/',include('rbac.urls',namespace='rbac')),
 ]

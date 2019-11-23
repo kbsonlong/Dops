@@ -11,7 +11,7 @@ class RoleAdmin(admin.ModelAdmin):
 
 
 class PermissionAdmin(admin.ModelAdmin):
-    list_display = ['name','url','icon']
+    list_display = ['name','url',]
 
 class MenuAdmin(admin.ModelAdmin):
     list_display = ['title','icon','priority']

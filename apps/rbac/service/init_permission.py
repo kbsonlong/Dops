@@ -39,9 +39,11 @@ def init_permission(request, user):
             "url": permission["url"],
             "parent_id": permission["parent_id"],
         })
+        print(permission)
+        print(menus_dict)
 
         # 获取菜单权限的数据结构，字典套字典，一个字典代表一个菜单
-        if not permission["parent_id"]:   # 当没有父节点时，说明此菜单为一级菜单
+        if not  permission["parent_id"]:
             menus_dict[permission["menu__pk"]] = {
                 "pk": permission["menu__pk"],
                 "title": permission["menu__title"],
@@ -75,4 +77,5 @@ def init_permission(request, user):
 
     # session中注入菜单数据
     request.session["menus_dict"] = menus_dict
+    print(menus_dict)
 

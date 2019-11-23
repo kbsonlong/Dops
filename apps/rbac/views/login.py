@@ -8,35 +8,37 @@ import datetime
 from django.shortcuts import render
 from django.http import HttpResponseRedirect, HttpResponse
 from django.utils.translation import ugettext as _
-from django.views.generic.base import TemplateView
+from django.views.generic.base import TemplateView,View
 from django.views.generic.edit import FormView
 from django.contrib.auth import authenticate,login,logout,get_user_model
-
-from rbac.models import RequestRecord
+from django.conf import settings
+from rbac.service import init_permission, authcode
 
 User = get_user_model()
 
 class UserLoginView(FormView):
-    template_name = 'rbac/login.html'
+    template_name = 'login.html'
     model = User
 
     def get_context_data(self, **kwargs):
         context = {}
         kwargs.update(context)
 
-    def post(self, request, *args, **kwargs):
+    def get(self, request, *args, **kwargs):
+        next_url = self.request.GET.get('next')
+        request.session['next_url'] = next_url
+        return render(request, 'login.html')
 
-        if 'HTTP_X_FORWARDED_FOR' in self.request.META:
-            ipaddr = self.request.META['HTTP_X_FORWARDED_FOR']
-        else:
-            ipaddr = self.request.META['REMOTE_ADDR']
+    def post(self, request, *args, **kwargs):
         username = self.request.POST.get("username")
         password = self.request.POST.get("password")
-        check_code = request.POST.get('checkcode')
+        check_code = self.request.POST.get('authcode')
         user = authenticate(username=username, password=password)
-        session_code = request.session["authcode"]
+        # session_code = request.session["authcode"]
+        session_code = check_code
 
-        if check_code.strip().lower() != session_code.lower():
+        # if check_code.strip().lower() != session_code.lower():
+        if check_code.lower() != session_code.lower():
             login_err = _('Did you slip the wrong hand? try again')
         else:
             if user is not None:  # pass authencation
@@ -44,12 +46,13 @@ class UserLoginView(FormView):
                     login_err = _('Warning, {} has been disabled'.format(user.username))
                     return render(request, 'login.html', {'login_err': login_err})
                 login(self.request, user)
-                userprofile = User.objects.get(username=user.username)
-                h = RequestRecord(ipaddr=ipaddr, type=1, get_full_path=self.request.get_full_path())
-                h.username = userprofile
-                h.save()
+                init_permission.init_permission(request, user)  # 调用权限注入函数，注入用户权限
+
                 login_limit_info = User.objects.filter(username=username)
                 login_limit_info.update(limit=0,login_date=datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+                next_url =  request.session.get('next_url')
+                if next_url:
+                    return HttpResponseRedirect(next_url)
                 return HttpResponseRedirect('/')
             else:
                 try:
@@ -75,8 +78,8 @@ class UserLogoutView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         logout(request)
-        response = super().get(request, *args, **kwargs)
-        return response
+
+        return HttpResponseRedirect(settings.LOGIN_URL)
 
     def get_context_data(self, **kwargs):
         context = {
@@ -84,3 +87,12 @@ class UserLogoutView(TemplateView):
         }
         kwargs.update(context)
         return super().get_context_data(**kwargs)
+
+# 验证码视图类
+class GetAuthImg(View):
+    """获取验证码视图类"""
+
+    def get(self, request):
+        data = authcode.get_authcode_img(request)
+        print("验证码：", request.session.get("authcode"))
+        return HttpResponse(data)

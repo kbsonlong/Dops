@@ -1,13 +1,13 @@
 import os,xlrd
-from django.shortcuts import render,HttpResponseRedirect
+from django.shortcuts import HttpResponseRedirect
 from django.views.generic import ListView,DetailView
-from django.http import JsonResponse,StreamingHttpResponse
-from pure_pagination import PageNotAnInteger, Paginator
+from django.http import StreamingHttpResponse
 from django.conf import settings
 # Create your views here.
 
 from . import models
 from .utils import CellWriter
+from rbac.service.decorators import LoginPermissionRequired
 
 
 def file_iterator(file_name, chunk_size=512):
@@ -20,11 +20,37 @@ def file_iterator(file_name, chunk_size=512):
             break
     f.close()
 
-def index(request):
-    product = models.Product.objects.first()
-    return render(request,"chart.html",{"product":product})
 
-class AssetListView(ListView):
+
+class IndexListView(LoginPermissionRequired,ListView):
+    template_name = "chart.html"
+    model = models.Product
+    context_object_name = "product"
+
+
+class ProductListView(LoginPermissionRequired,ListView):
+    template_name = "asset-list.html"
+    model = models.Product
+    context_object_name = "products"
+
+class ProjectListView(LoginPermissionRequired,ListView):
+    template_name = "asset-list.html"
+    model = models.Project
+    context_object_name = "projects"
+
+class IdcListView(LoginPermissionRequired,ListView):
+    template_name = "asset-list.html"
+    model = models.IDC
+    context_object_name = "idcs"
+
+class EnvListView(LoginPermissionRequired,ListView):
+    template_name = "asset-list.html"
+    model = models.Env
+    context_object_name = "envs"
+
+
+
+class AssetListView(LoginPermissionRequired,ListView):
     model = models.Asset
     template_name = "asset-list.html"
     ordering = ("id",)
@@ -32,9 +58,22 @@ class AssetListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super(AssetListView,self).get_context_data( **kwargs)
+        asset_types = models.Asset.type_choice
+        server_types = models.Server.sub_type_chioce
+        context.update({'asset_types': asset_types, 'server_types': server_types})
         return context
 
+
+class AssetDetail(LoginPermissionRequired,DetailView):
+    model = models.Asset
+    template_name = "asset-list.html"
+
 def assets_dumps(request):
+    """
+    批量导出
+    :param request:
+    :return:
+    """
     if request.method == "POST":
         dRbt = CellWriter('assets_dumps.xls')
         serSheet = dRbt.workbook.add_sheet('服务器资产',cell_overwrite_ok=True)
@@ -93,14 +132,18 @@ def assets_dumps(request):
         return response
 
 def assets_import(request):
+    """
+    批量导入
+    :param request:
+    :return:
+    """
     if request.method == "POST":
         f = request.FILES.get('import_file')
-        filename = os.path.join(os.getcwd() + '/upload/',f.name)
+        filename = os.path.join(settings.MEDIA_ROOT,f.name)
         if os.path.isdir(os.path.dirname(filename)) is not True:os.makedirs(os.path.dirname(filename))
-        fobj = open(filename,'wb')
-        for chrunk in f.chunks():
-            fobj.write(chrunk)
-        fobj.close()
+        with open(filename,'wb') as fobj:
+            for chrunk in f.chunks():
+                fobj.write(chrunk)
         #读取上传的execl文件内容方法
         def getAssetsData(fname=filename):
             bk = xlrd.open_workbook(fname)
@@ -179,3 +222,5 @@ def assets_import(request):
                     except Exception as ex:
                         assetsObj.delete()
         return HttpResponseRedirect('/assets_list')
+
+

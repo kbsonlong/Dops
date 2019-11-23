@@ -18,6 +18,10 @@ from cmdb import views
 
 app_name = "cmdb"
 urlpatterns = [
-    path('asset-list/', views.AssetListView.as_view(), name='asset_list'),
+    path('product/list/', views.ProductListView.as_view(), name='product_list'),
+    path('project/list/', views.ProjectListView.as_view(), name='project_list'),
+    path('idc/list/', views.IdcListView.as_view(), name='idc_list'),
+    path('env/list/', views.EnvListView.as_view(), name='env_list'),
+    path('asset/list/', views.AssetListView.as_view(), name='asset_list'),
     path('asset-dumps/', views.assets_dumps, name='assets_dumps'),
 ]

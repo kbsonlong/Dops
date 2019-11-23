@@ -90,7 +90,7 @@ class Asset(models.Model):
     status = models.SmallIntegerField(choices=status_choice, verbose_name="资产状态", default=0, blank=True)
     idc = models.ForeignKey(to="IDC", on_delete=models.SET_NULL, related_name="idc", null=True, blank=True,
                                   verbose_name="所属机房")
-    create_time = models.DateTimeField(auto_created=True, blank=True, verbose_name="采购时间")
+    create_time = models.DateTimeField(auto_now=True, blank=True, verbose_name="采购时间")
     modity_time = models.DateTimeField(auto_now=True, blank=True, verbose_name="修改时间")
     remark = models.TextField(verbose_name="备注", null=True, blank=True)
 
