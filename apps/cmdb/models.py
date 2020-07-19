@@ -139,7 +139,7 @@ class Service(models.Model):
     )
     cluster_chioce = (
         ("standlone", "单机模式"),
-        ("master-slave", "主从模式"),
+        ("main-subordinate", "主从模式"),
         ("cluster", "高可用模式"),
     )
     name = models.CharField(verbose_name="服务名称", max_length=100)

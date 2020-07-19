@@ -130,7 +130,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=100, verbose_name='服务名称')),
                 ('version', models.CharField(blank=True, max_length=100, verbose_name='服务版本')),
                 ('service_type', models.SmallIntegerField(blank=True, choices=[(0, '消息队列'), (1, '数据库'), (2, '中间件')], default=0, verbose_name='服务类型')),
-                ('cluster_type', models.CharField(blank=True, choices=[('standlone', '单机模式'), ('master-slave', '主从模式'), ('cluster', '高可用模式')], default='standlone', max_length=50, verbose_name='集群模式')),
+                ('cluster_type', models.CharField(blank=True, choices=[('standlone', '单机模式'), ('main-subordinate', '主从模式'), ('cluster', '高可用模式')], default='standlone', max_length=50, verbose_name='集群模式')),
                 ('remark', models.TextField(blank=True, null=True, verbose_name='备注')),
                 ('server', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.CASCADE, related_name='server', to='cmdb.Server', verbose_name='部署主机')),
             ],
